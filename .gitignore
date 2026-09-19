@@ -1,0 +1,38 @@
+# 相依套件與建置輸出
+node_modules/
+dist/
+src-tauri/target/
+portable/
+
+# 執行檔與原生編譯產物：避免將可執行檔入庫
+*.exe
+*.dll
+*.so
+*.dylib
+*.pdb
+*.msi
+*.app
+*.dmg
+*.deb
+*.rpm
+*.AppImage
+
+# 打包與壓縮產物
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
+# 編輯器與作業系統檔案
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 環境設定與暫存檔
+.env
+.env.*
+*.log
+out.txt
+err.txt
+
