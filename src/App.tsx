@@ -19,6 +19,7 @@ import { CompareConfig } from './components/CompareConfig';
 import { ProgressBar } from './components/ProgressBar';
 import { SummaryCards } from './components/SummaryCards';
 import { DifferenceTable } from './components/DifferenceTable';
+import { numericToleranceError } from './lib/numericTolerance';
 
 export const App: React.FC = () => {
   // File A State
@@ -47,12 +48,15 @@ export const App: React.FC = () => {
   const [excludedColumns, setExcludedColumns] = useState<string[]>([]);
   const [trimWhitespace, setTrimWhitespace] = useState(false);
   const [ignoreCase, setIgnoreCase] = useState(false);
+  const [numericTolerance, setNumericTolerance] = useState('0');
+  const toleranceError = numericToleranceError(numericTolerance);
 
   // Execution & Results State
   const [isComparing, setIsComparing] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [progress, setProgress] = useState<ProgressPayload | null>(null);
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
+  const [resultOptions, setResultOptions] = useState<CompareOptions | null>(null);
   const [generalError, setGeneralError] = useState<string | null>(null);
 
   // Inspect File A
@@ -140,6 +144,7 @@ export const App: React.FC = () => {
       fileInfoB &&
       !loadingA &&
       !loadingB &&
+      !toleranceError &&
       (mode === 'row_by_row' || keyColumns.length > 0)
   );
 
@@ -152,6 +157,7 @@ export const App: React.FC = () => {
     setProgress(null);
     setGeneralError(null);
     setCompareResult(null);
+    setResultOptions(null);
 
     const options: CompareOptions = {
       file_a_path: pathA,
@@ -163,10 +169,12 @@ export const App: React.FC = () => {
       excluded_columns: excludedColumns,
       trim_whitespace: trimWhitespace,
       ignore_case: ignoreCase,
+      numeric_tolerance: numericTolerance,
     };
 
     try {
       const result = await compareFiles(options);
+      setResultOptions(options);
       setCompareResult(result);
     } catch (err: any) {
       setGeneralError(err?.message || '比對失敗，請確認檔案設定與編碼是否正確。');
@@ -183,18 +191,6 @@ export const App: React.FC = () => {
     } catch (err) {
       console.error('Failed to cancel compare:', err);
     }
-  };
-
-  const currentOptions: CompareOptions = {
-    file_a_path: pathA,
-    file_b_path: pathB,
-    file_a_parse_options: parseOptionsA,
-    file_b_parse_options: parseOptionsB,
-    comparison_mode: mode,
-    key_columns: keyColumns,
-    excluded_columns: excludedColumns,
-    trim_whitespace: trimWhitespace,
-    ignore_case: ignoreCase,
   };
 
   return (
@@ -274,12 +270,12 @@ export const App: React.FC = () => {
         )}
 
         {/* Results View */}
-        {compareResult && !isComparing && (
+        {compareResult && resultOptions && !isComparing && (
           <div className="flex flex-col gap-6 animate-in fade-in duration-300">
-            <SummaryCards result={compareResult} />
+            <SummaryCards result={compareResult} numericTolerance={resultOptions.numeric_tolerance} />
             <DifferenceTable
               result={compareResult}
-              options={currentOptions}
+              options={resultOptions}
               onReset={() => setCompareResult(null)}
             />
           </div>
@@ -300,6 +296,9 @@ export const App: React.FC = () => {
             setTrimWhitespace={setTrimWhitespace}
             ignoreCase={ignoreCase}
             setIgnoreCase={setIgnoreCase}
+            numericTolerance={numericTolerance}
+            setNumericTolerance={setNumericTolerance}
+            toleranceError={toleranceError}
             onStartCompare={handleStartCompare}
             canCompare={canCompare}
           />

@@ -91,6 +91,7 @@ pub fn export_to_excel<P: AsRef<Path>>(
             options.file_b_parse_options.delimiter.display_name(),
         ),
         ("Compare Mode", format!("{:?}", options.comparison_mode)),
+        ("Numeric Tolerance", options.numeric_tolerance.clone()),
         (
             "Key Columns",
             if result.key_columns.is_empty() {
@@ -112,7 +113,7 @@ pub fn export_to_excel<P: AsRef<Path>>(
         (
             "Result",
             if result.identical {
-                "IDENTICAL (完全相同)".to_string()
+                "IDENTICAL (依目前比對規則相同)".to_string()
             } else {
                 "DIFFERENT (內容不同)".to_string()
             },

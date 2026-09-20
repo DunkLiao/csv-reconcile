@@ -26,6 +26,9 @@ interface CompareConfigProps {
   setTrimWhitespace: (val: boolean) => void;
   ignoreCase: boolean;
   setIgnoreCase: (val: boolean) => void;
+  numericTolerance: string;
+  setNumericTolerance: (val: string) => void;
+  toleranceError: string | null;
   onStartCompare: () => void;
   canCompare: boolean;
 }
@@ -43,6 +46,9 @@ export const CompareConfig: React.FC<CompareConfigProps> = ({
   setTrimWhitespace,
   ignoreCase,
   setIgnoreCase,
+  numericTolerance,
+  setNumericTolerance,
+  toleranceError,
   onStartCompare,
   canCompare,
 }) => {
@@ -367,6 +373,28 @@ export const CompareConfig: React.FC<CompareConfigProps> = ({
       {/* Value Comparison Rules */}
       <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
         <label className="block text-xs font-bold text-slate-700 mb-2">比對微調設定 (可選)</label>
+        <div className="mb-4">
+          <label htmlFor="numeric-tolerance" className="block text-sm font-semibold text-slate-700 mb-2">
+            數值誤差容許值
+          </label>
+          <input
+            id="numeric-tolerance"
+            type="text"
+            inputMode="decimal"
+            value={numericTolerance}
+            onChange={(e) => setNumericTolerance(e.target.value)}
+            aria-invalid={Boolean(toleranceError)}
+            aria-describedby="numeric-tolerance-help numeric-tolerance-error"
+            className={`w-full sm:w-64 px-3 py-2 text-sm bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${toleranceError ? 'border-rose-400' : 'border-slate-300'}`}
+          />
+          <p id="numeric-tolerance-help" className="text-xs text-slate-500 mt-2 leading-relaxed">
+            所有參與比對的數值均套用 |A − B| ≤ 容許值（含等於）。預設為 0，001、1.0 與 1 仍視為相同。
+            支援小數、科學記號及標準千分位；百分比與貨幣符號依文字比對。Key 配對不受影響。
+          </p>
+          <p id="numeric-tolerance-error" role={toleranceError ? 'alert' : undefined} className="text-xs text-rose-600 mt-1">
+            {toleranceError}
+          </p>
+        </div>
         <div className="flex flex-wrap gap-6 text-xs text-slate-700">
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input
@@ -388,7 +416,7 @@ export const CompareConfig: React.FC<CompareConfigProps> = ({
           </label>
         </div>
         <div className="text-[11px] text-slate-400 mt-2">
-          * 預設採用嚴格字串比對，保留前導零。若勾選上述選項，微調僅影響比對判定，不會修改原始資料內容與 Excel 匯出值。
+          * 雙方皆為有效數值時採數值比對，其餘依文字比對。設定僅影響判定，不會修改原始資料內容、前導零與 Excel 匯出值。
         </div>
       </div>
 

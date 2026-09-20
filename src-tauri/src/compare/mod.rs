@@ -2,6 +2,7 @@ pub mod duplicate_detector;
 pub mod key_builder;
 pub mod key_comparator;
 pub mod row_comparator;
+pub mod value_comparator;
 
 pub use duplicate_detector::DuplicateDetector;
 pub use key_builder::KeyBuilder;

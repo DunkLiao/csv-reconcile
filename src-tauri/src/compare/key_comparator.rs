@@ -1,5 +1,6 @@
 use crate::compare::duplicate_detector::DuplicateDetector;
 use crate::compare::key_builder::KeyBuilder;
+use crate::compare::value_comparator::{compare_values, parse_tolerance};
 use crate::error::AppError;
 use crate::models::compare_options::CompareOptions;
 use crate::models::compare_result::CompareResult;
@@ -29,6 +30,7 @@ where
     F: FnMut(ProgressPayload),
 {
     let start_time = Instant::now();
+    let tolerance = parse_tolerance(&options.numeric_tolerance)?;
 
     // 1. Open readers for File A and File B
     let (enc_a, skip_a, delim_a) =
@@ -332,8 +334,13 @@ where
                     ""
                 };
 
-                let is_different =
-                    compare_values(val_a, val_b, options.trim_whitespace, options.ignore_case);
+                let is_different = compare_values(
+                    val_a,
+                    val_b,
+                    options.trim_whitespace,
+                    options.ignore_case,
+                    &tolerance,
+                );
 
                 if is_different {
                     record_has_diff = true;
@@ -478,26 +485,4 @@ where
         duplicate_key_records,
         duration_ms,
     })
-}
-
-pub fn compare_values(a: &str, b: &str, trim: bool, ignore_case: bool) -> bool {
-    let mut val_a = a;
-    let mut val_b = b;
-    let trimmed_a;
-    let trimmed_b;
-
-    if trim {
-        trimmed_a = val_a.trim();
-        trimmed_b = val_b.trim();
-        val_a = trimmed_a;
-        val_b = trimmed_b;
-    }
-
-    if ignore_case {
-        let lc_a = val_a.to_lowercase();
-        let lc_b = val_b.to_lowercase();
-        lc_a != lc_b
-    } else {
-        val_a != val_b
-    }
 }

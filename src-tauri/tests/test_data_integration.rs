@@ -67,6 +67,7 @@ fn options(
         excluded_columns: excluded.iter().map(|s| s.to_string()).collect(),
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     }
 }
 
@@ -337,6 +338,7 @@ fn tc03_empty_key_in_b_is_not_counted_as_b_only() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
     let r = key_compare(&opts);
 
@@ -375,6 +377,7 @@ fn tc03_incomplete_composite_key_is_not_counted_as_set_difference() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
     let r = key_compare(&opts);
 
@@ -788,6 +791,7 @@ fn tc09_no_common_columns() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
     let err = compare_key_based(&opts, Arc::new(AtomicBool::new(false)), |_| {}).unwrap_err();
     assert!(matches!(
@@ -855,6 +859,7 @@ fn tc10_trim_whitespace_and_ignore_case() {
         excluded_columns: vec![],
         trim_whitespace: trim,
         ignore_case: ignore_case,
+        numeric_tolerance: "0".into(),
     };
 
     // 預設：嚴格比對 -> 不同
@@ -889,6 +894,7 @@ fn tc10_preserves_leading_zero_key() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
     let r = key_compare(&opts);
     // Key 為純字串比對，前導零保留 -> 001 與 1 視為不同 Key

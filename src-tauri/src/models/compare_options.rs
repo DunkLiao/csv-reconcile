@@ -25,4 +25,10 @@ pub struct CompareOptions {
     pub excluded_columns: Vec<String>,
     pub trim_whitespace: bool,
     pub ignore_case: bool,
+    #[serde(default = "default_numeric_tolerance")]
+    pub numeric_tolerance: String,
+}
+
+fn default_numeric_tolerance() -> String {
+    "0".to_string()
 }

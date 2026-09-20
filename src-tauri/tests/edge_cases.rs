@@ -89,6 +89,7 @@ fn opts_paths(
         excluded_columns: excluded.iter().map(|s| s.to_string()).collect(),
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     }
 }
 

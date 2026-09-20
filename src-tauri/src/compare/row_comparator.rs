@@ -1,4 +1,4 @@
-use crate::compare::key_comparator::compare_values;
+use crate::compare::value_comparator::{compare_values, parse_tolerance};
 use crate::error::AppError;
 use crate::models::compare_options::CompareOptions;
 use crate::models::compare_result::CompareResult;
@@ -19,6 +19,7 @@ where
     F: FnMut(ProgressPayload),
 {
     let start_time = Instant::now();
+    let tolerance = parse_tolerance(&options.numeric_tolerance)?;
 
     // 1. Open readers
     let (enc_a, skip_a, delim_a) =
@@ -165,7 +166,13 @@ where
                     ""
                 };
 
-                if compare_values(val_a, val_b, options.trim_whitespace, options.ignore_case) {
+                if compare_values(
+                    val_a,
+                    val_b,
+                    options.trim_whitespace,
+                    options.ignore_case,
+                    &tolerance,
+                ) {
                     row_has_diff = true;
                     different_cells += 1;
                     differences.push(Difference {

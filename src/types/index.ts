@@ -42,6 +42,7 @@ export interface CompareOptions {
   excluded_columns: string[];
   trim_whitespace: boolean;
   ignore_case: boolean;
+  numeric_tolerance: string;
 }
 
 export type DifferenceType =

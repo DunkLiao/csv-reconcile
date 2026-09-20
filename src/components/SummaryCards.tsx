@@ -8,9 +8,10 @@ import { CompareResult } from '../types';
 
 interface SummaryCardsProps {
   result: CompareResult;
+  numericTolerance: string;
 }
 
-export const SummaryCards: React.FC<SummaryCardsProps> = ({ result }) => {
+export const SummaryCards: React.FC<SummaryCardsProps> = ({ result, numericTolerance }) => {
   return (
     <div className="flex flex-col gap-4">
       {/* Banner status */}
@@ -30,13 +31,16 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ result }) => {
           <div>
             <h2 className="text-lg font-bold">
               {result.identical
-                ? '兩個檔案比對結果：完全相同 ✅'
+                ? '兩個檔案比對結果：依目前比對規則相同 ✅'
                 : '兩個檔案比對結果：發現差異 ❌'}
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
               {result.key_columns.length > 0
                 ? `比對 Key 結構：${result.key_columns.join(' + ')}`
                 : '比對模式：依資料列順序 (Row-by-Row)'}
+            </p>
+            <p className="text-xs text-slate-600 mt-1 break-all">
+              本次數值誤差容許值：{numericTolerance}（|A − B| ≤ 容許值）
             </p>
           </div>
         </div>

@@ -97,6 +97,7 @@ fn test_spec_section_71_integration_case() {
         excluded_columns: vec!["更新時間".to_string()],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
 
     let cancel_token = Arc::new(AtomicBool::new(false));
@@ -162,6 +163,7 @@ fn test_row_by_row_compare() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
 
     let cancel_token = Arc::new(AtomicBool::new(false));
@@ -215,6 +217,7 @@ fn test_quoted_field_with_newline_and_delimiter() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
 
     let cancel_token = Arc::new(AtomicBool::new(false));
@@ -260,6 +263,7 @@ fn test_duplicate_key_detection() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
 
     let cancel_token = Arc::new(AtomicBool::new(false));
@@ -313,6 +317,7 @@ fn test_big5_encoding_and_generate_samples() {
         excluded_columns: vec![],
         trim_whitespace: false,
         ignore_case: false,
+        numeric_tolerance: "0".into(),
     };
 
     let cancel_token = Arc::new(AtomicBool::new(false));
